@@ -1,8 +1,6 @@
-desc "Create sample data for development environment"
-task :sample_data => :environment do
+task sample_data: :environment do
   p "Creating sample data"
 
-  # Destroy existing data
   if Rails.env.development?
     FollowRequest.destroy_all
     Comment.destroy_all
@@ -11,20 +9,21 @@ task :sample_data => :environment do
     User.destroy_all
   end
 
-  # Create Users
   12.times do
     name = Faker::Name.first_name
-    User.create(
+    u = User.create(
       email: "#{name}@example.com",
       password: "password",
       username: name,
-      private: [true, false].sample
+      private: [true, false].sample,
     )
+    
   end
+
   p "There are now #{User.count} users."
 
-  # Create Follow Requests
   users = User.all
+
   users.each do |first_user|
     users.each do |second_user|
       next if first_user == second_user
@@ -34,11 +33,16 @@ task :sample_data => :environment do
           status: FollowRequest.statuses.keys.sample
         )
       end
+
+      if rand < 0.75
+        second_user.sent_follow_requests.create(
+          recipient: first_user,
+          status: FollowRequest.statuses.keys.sample
+        )
+      end
     end
   end
-  p "There are now #{FollowRequest.count} follow requests."
 
-  # Create Photos, Likes, and Comments
   users.each do |user|
     rand(15).times do
       photo = user.own_photos.create(
@@ -47,7 +51,7 @@ task :sample_data => :environment do
       )
 
       user.followers.each do |follower|
-        if rand < 0.5
+        if rand < 0.5 && !photo.fans.include?(follower)
           photo.fans << follower
         end
 
@@ -60,6 +64,8 @@ task :sample_data => :environment do
       end
     end
   end
+  p "There are now #{User.count} users."
+  p "There are now #{FollowRequest.count} follow requests."
   p "There are now #{Photo.count} photos."
   p "There are now #{Like.count} likes."
   p "There are now #{Comment.count} comments."
