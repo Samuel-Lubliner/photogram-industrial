@@ -23,12 +23,6 @@
       <% if user_signed_in? %>
 
         <li class="nav-item">
-        <%= link_to "Your profile", user_path(@user.username), class: "nav-link" %>
-        
-        </li>
-
-
-        <li class="nav-item">
           <%= link_to "Edit #{current_user.username.camelcase}'s profile", edit_user_registration_path, class: "nav-link" %>
         </li>
 
