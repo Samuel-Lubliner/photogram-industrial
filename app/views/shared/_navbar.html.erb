@@ -21,6 +21,7 @@
       <ul class="navbar-nav mb-2 mb-lg-0">
 
       <% if user_signed_in? %>
+
         <li class="nav-item">
           <%= link_to "Edit #{current_user.username.camelcase}'s profile", edit_user_registration_path, class: "nav-link" %>
         </li>
