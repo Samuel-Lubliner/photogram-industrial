@@ -1,1 +1,13 @@
 <%= render partial: "users/tabbed" %>
+
+<h5>
+  <%= @user.username %>'s followers
+</h5>
+
+<ul class="list-group list-group-flush">
+  <% @user.followers.each do |follower| %>
+    <li class="list-group-item">
+      <%= follower.username %>
+    </li>
+  <% end %>
+</ul>
